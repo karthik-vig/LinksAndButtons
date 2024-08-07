@@ -1,0 +1,15 @@
+{
+    "manifest_version": 2,
+    "name": "LinksAndButtons",
+    "version": "1.0.0",
+    "description": "An extension to fetch all links in the webpage or mark all buttons, based on the user input in the pop-out window of the extension.",
+    "icons": {
+        "48": "assets/icons/placeholder-48.png"
+    },
+    "permissions": ["activeTab"],
+    "browser_action" : {
+        "default_icon": "assets/icons/placeholder-48.png",
+        "default_title": "LinksAndButtons",
+        "default_popup": "index.html"
+    }
+}

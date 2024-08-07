@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+      "outDir": "./public/scripts",
+      "module": "ESNext",
+      "target": "ES6",
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "types": ["@types/webextension-polyfill"]
+    },
+    "include": ["./contentScripts/*.ts", "contentScripts"]
+  }
