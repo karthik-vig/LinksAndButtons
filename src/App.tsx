@@ -54,6 +54,7 @@ function scriptSetup(
   setLinkList: unknown,
   setButtonList: unknown
 ) {
+  browser.tabs.insertCSS({ file: "../css/insertCSS.css"});
   browser.tabs
   .executeScript({ file: "../../scripts/recordTabInfo.js"})
   .then(() => getTabInfo(
@@ -72,6 +73,11 @@ function ListOfLinks(linkList: LinkListType) {
   return (
     <List>
       {linkList.map((value: LinkType) => {
+        let titleColor: string = "black";
+        if (value.title === "") {
+          value.title = "<|NO TITLE|>";
+          titleColor = "orange";
+        }
       return (
         <ListItem disablePadding>
         <ListItemButton
@@ -80,7 +86,12 @@ function ListOfLinks(linkList: LinkListType) {
           <ListItemIcon>
             <OpenInNewOutlinedIcon />
           </ListItemIcon>
-          <ListItemText primary={value.title} />
+          <ListItemText 
+            primary={value.title} 
+            sx={{
+              color: titleColor,
+            }}
+          />
         </ListItemButton>
       </ListItem>
       );
