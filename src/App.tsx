@@ -10,7 +10,8 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import InboxIcon from '@mui/icons-material/Inbox';
+import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
+import HighlightAltOutlinedIcon from '@mui/icons-material/HighlightAltOutlined';
 
 type LinkType = {title: string, link: string};
 type ButtonType = {title: string};
@@ -63,14 +64,21 @@ function scriptSetup(
 }
 
 function ListOfLinks(linkList: LinkListType) {
+
+  const openNewTab = (href: string) => {
+    browser.tabs.create({url: href});
+  };
+
   return (
     <List>
       {linkList.map((value: LinkType) => {
       return (
         <ListItem disablePadding>
-        <ListItemButton>
+        <ListItemButton
+          onClick={() => openNewTab(value.link)}
+        >
           <ListItemIcon>
-            <InboxIcon />
+            <OpenInNewOutlinedIcon />
           </ListItemIcon>
           <ListItemText primary={value.title} />
         </ListItemButton>
@@ -82,6 +90,7 @@ function ListOfLinks(linkList: LinkListType) {
 }
 
 function ListOfButtons(buttonList: ButtonListType) {
+
   return (
     <List>
       {buttonList.map((value: ButtonType) => {
@@ -89,7 +98,7 @@ function ListOfButtons(buttonList: ButtonListType) {
                 <ListItem disablePadding>
                 <ListItemButton>
                   <ListItemIcon>
-                    <InboxIcon />
+                    <HighlightAltOutlinedIcon />
                   </ListItemIcon>
                   <ListItemText primary={value.title} />
                 </ListItemButton>

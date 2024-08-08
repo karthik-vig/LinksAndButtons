@@ -6,7 +6,7 @@
     "icons": {
         "48": "assets/icons/placeholder-48.png"
     },
-    "permissions": ["activeTab"],
+    "permissions": ["activeTab", "tabs"],
     "browser_action" : {
         "default_icon": "assets/icons/placeholder-48.png",
         "default_title": "LinksAndButtons",

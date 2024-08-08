@@ -1,5 +1,4 @@
 "use strict";
-document.body.style.border = "5px solid purple";
 browser.runtime.onMessage
     .addListener((message, sender, sendResponse) => {
     const tabInfo = {
@@ -24,31 +23,11 @@ browser.runtime.onMessage
     const allButtonTags = document.querySelectorAll(`input[type="button"]`);
     if (allButtonTags !== null) {
         allButtonTags.forEach((buttonElement) => {
-            const buttonTitle = (buttonElement.textContent !== null) ? buttonElement.textContent : "";
+            const buttonTitle = buttonElement.getAttribute("value");
             tabInfo.buttonList.push({
-                title: buttonTitle,
+                title: (buttonTitle !== null) ? buttonTitle : "",
             });
         });
     }
-    /*
-    tabInfo.linkList = [
-        {
-            title: "hey 1",
-            link: "link 1"
-        },
-        {
-            title: "hey 2",
-            link: "link 2"
-        }
-    ];
-    tabInfo.buttonList = [
-        {
-            title: "btn 1"
-        },
-        {
-            title: "btn 2"
-        }
-    ];
-    */
     sendResponse(tabInfo);
 });
