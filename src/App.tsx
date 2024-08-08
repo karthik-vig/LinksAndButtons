@@ -8,7 +8,7 @@ import {
   ListItem,
   ListItemButton,
   ListItemIcon,
-  ListItemText
+  ListItemText,
 } from '@mui/material';
 import InboxIcon from '@mui/icons-material/Inbox';
 
@@ -62,9 +62,92 @@ function scriptSetup(
   .catch(handleError);
 }
 
+function ListOfLinks(linkList: LinkListType) {
+  return (
+    <List>
+      {linkList.map((value: LinkType) => {
+      return (
+        <ListItem disablePadding>
+        <ListItemButton>
+          <ListItemIcon>
+            <InboxIcon />
+          </ListItemIcon>
+          <ListItemText primary={value.title} />
+        </ListItemButton>
+      </ListItem>
+      );
+    })}
+    </List>
+  );
+}
+
+function ListOfButtons(buttonList: ButtonListType) {
+  return (
+    <List>
+      {buttonList.map((value: ButtonType) => {
+              return (
+                <ListItem disablePadding>
+                <ListItemButton>
+                  <ListItemIcon>
+                    <InboxIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={value.title} />
+                </ListItemButton>
+              </ListItem>
+              );
+            })}
+    </List>
+  );
+}
+
+function ControlButtons(
+  setDisplayListToggle: React.Dispatch<React.SetStateAction<string>>
+) {
+  return (
+    <Box
+        sx={{
+          width: "100%"
+        }}
+      >
+        <Stack spacing={2} direction="row">
+          <Button
+            variant="text"
+            sx={{
+              width: "50%",
+            }}
+            onClick={() => {setDisplayListToggle("links")}}
+          >
+            Links
+          </Button>
+          <Button 
+            variant="text"
+            sx={{
+              width: "50%",
+            }}
+            onClick={() => {setDisplayListToggle("buttons")}}
+          >
+            Buttons
+          </Button>
+        </Stack>
+      </Box>
+  );
+}
+
+function ContentList(DisplayList: JSX.Element) {
+  return (
+    <Box
+        sx={{
+          width: "100%",
+          overflox: "scroll"
+        }}
+      >
+          {DisplayList}
+      </Box>
+  );
+}
+
 export default function App() {
-  const [firstListDisplay, setFirstListDisplay] = useState("block");
-  const [secondListDisplay, setSecondListDisplay] = useState("hidden");
+  const [displayListToggle, setDisplayListToggle] = useState("links");
   const [linkList, setLinkList] = useImmer(Array<LinkType>(0));
   const [buttonList, setButtonList] = useImmer(Array<ButtonType>(0));
 
@@ -74,14 +157,14 @@ export default function App() {
     setLinkList,
     setButtonList
   ]);
-  /*
-  const tempArr: string[] = Array(100).fill(0).map((value: number)=>{
-    return "number " + value;
-  });
-  const tempArr2: string[] = Array(100).fill(1).map((value: number)=>{
-    return "number " + value;
-  });
-  */
+  
+  let DisplayList: JSX.Element = (<List></List>);
+  if (displayListToggle === "links") {
+    DisplayList = ListOfLinks(linkList);
+  } else if (displayListToggle === "buttons") {
+    DisplayList = ListOfButtons(buttonList);
+  }
+
   return (
     <Box
       sx={{
@@ -89,73 +172,8 @@ export default function App() {
         widht: "100%"
       }}
     >
-      <Stack 
-        spacing={2}
-        direction="column"
-      >
-        <Stack spacing={2} direction="row">
-          <Button 
-            variant="text"
-            sx={{
-              width: "50%",
-            }}
-            onClick={() => {setFirstListDisplay("block"); setSecondListDisplay("hidden")}}
-          >
-            Links
-          </Button>
-          <Button 
-            variant="text"
-            sx={{
-              width: "50%",
-            }}
-            onClick={() => {setFirstListDisplay("hidden"); setSecondListDisplay("block")}}
-          >
-            Buttons
-          </Button>
-        </Stack>
-        <Stack 
-          spacing={2} 
-          direction="column" 
-          overflow="scroll"
-        >
-          <List
-            sx={{
-              display: firstListDisplay,
-            }}
-          >
-            {linkList.map((value: LinkType) => {
-              return (
-                <ListItem disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    <InboxIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={value.title} />
-                </ListItemButton>
-              </ListItem>
-              );
-            })}
-          </List>
-          <List
-            sx={{
-              display: secondListDisplay,
-            }}
-          >
-            {buttonList.map((value: ButtonType) => {
-              return (
-                <ListItem disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    <InboxIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={value.title} />
-                </ListItemButton>
-              </ListItem>
-              );
-            })}
-          </List>
-        </Stack>
-      </Stack>
+      {ControlButtons(setDisplayListToggle)}
+      {ContentList(DisplayList)}
     </Box>
   );
 }

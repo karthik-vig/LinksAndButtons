@@ -1,5 +1,5 @@
 
-document.body.style.border = "5px solid red";
+document.body.style.border = "5px solid purple";
 type MessageType = {
     command: string;
 };
@@ -25,6 +25,27 @@ browser.runtime.onMessage
         sendResponse(tabInfo);
         return;
     }
+    const allLinkTags: NodeListOf<Element> | null = document.querySelectorAll("a");
+    if (allLinkTags !== null) {
+        allLinkTags.forEach((linkElement) => {
+            const linkTitle: string = (linkElement.textContent !== null)? linkElement.textContent: "";
+            const linkHref: string | null = linkElement.getAttribute("href")
+            tabInfo.linkList.push({
+                title: linkTitle,
+                link: linkHref !== null? linkHref : "",
+            });
+        }) 
+    }
+    const allButtonTags: NodeListOf<Element> | null = document.querySelectorAll(`input[type="button"]`);
+    if (allButtonTags !== null) {
+        allButtonTags.forEach((buttonElement) => {
+            const buttonTitle: string = (buttonElement.textContent !== null)? buttonElement.textContent : "";
+            tabInfo.buttonList.push({
+                title: buttonTitle,
+            });
+        }) 
+    }
+    /*
     tabInfo.linkList = [
         {
             title: "hey 1",
@@ -43,5 +64,6 @@ browser.runtime.onMessage
             title: "btn 2"
         }
     ];
+    */
     sendResponse(tabInfo);
 })
