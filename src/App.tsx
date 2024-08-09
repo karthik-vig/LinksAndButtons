@@ -69,8 +69,9 @@ function ListOfLinks(linkList: LinkListType) {
     <List>
       {linkList.map((value: LinkType) => {
         let titleColor: string = "black";
+        let title: string = value.title;
         if (value.title === "") {
-          value.title = "<|NO TITLE|>";
+          title = "<|NO TITLE|>";
           titleColor = "orange";
         }
       return (
@@ -82,7 +83,7 @@ function ListOfLinks(linkList: LinkListType) {
             <OpenInNewOutlinedIcon />
           </ListItemIcon>
           <ListItemText 
-            primary={value.title} 
+            primary={title} 
             sx={{
               color: titleColor,
             }}
@@ -109,6 +110,12 @@ function ListOfButtons(buttonList: ButtonListType, tabID: number | null) {
   return (
     <List>
       {buttonList.map((value: ButtonType, index: number) => {
+              let titleColor: string = "black";
+              let title: string = value.title;
+              if (value.title === "") {
+                title = "<|NO TITLE|>";
+                titleColor = "orange";
+              }
               return (
                 <ListItem disablePadding>
                 <ListItemButton
@@ -117,7 +124,12 @@ function ListOfButtons(buttonList: ButtonListType, tabID: number | null) {
                   <ListItemIcon>
                     <HighlightAltOutlinedIcon />
                   </ListItemIcon>
-                  <ListItemText primary={value.title} />
+                  <ListItemText 
+                    primary={title} 
+                    sx={{
+                      color: titleColor,
+                    }}
+                  />
                 </ListItemButton>
               </ListItem>
               );
