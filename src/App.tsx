@@ -18,13 +18,13 @@ type ButtonType = {title: string};
 type LinkListType = Array<LinkType>;
 type ButtonListType = Array<ButtonType>;
 type TabInfoType = {
+  tabID: number | null,
   linkList: LinkListType,
   buttonList: ButtonListType
 };
 
 function getTabInfo(
-  setLinkList: unknown,
-  setButtonList: unknown
+  setTabInfoList: unknown
 ) {
   browser.tabs
   .query({active: true, currentWindow: true})
@@ -34,13 +34,11 @@ function getTabInfo(
         "id" in tabs[0]) {
           browser.tabs
           .sendMessage(tabs[0].id, {
-            command: "getTabInfo"
-          }).then(({ 
-            linkList,
-            buttonList
-          } : TabInfoType) => {
-            if (typeof setLinkList === "function") setLinkList(linkList);
-            if (typeof setButtonList === "function") setButtonList(buttonList);
+            command: "getTabInfo",
+            tabID: tabs[0].id
+          }).then((tabInfoList : TabInfoType) => {
+            if (typeof setTabInfoList !== "function") return;
+            setTabInfoList(tabInfoList);
           })
         }
   })
@@ -51,15 +49,12 @@ function handleError(error: Error) {
 }
 
 function scriptSetup(
-  setLinkList: unknown,
-  setButtonList: unknown
+ setTabInfoList: unknown
 ) {
-  browser.tabs.insertCSS({ file: "../css/insertCSS.css"});
   browser.tabs
   .executeScript({ file: "../../scripts/recordTabInfo.js"})
   .then(() => getTabInfo(
-    setLinkList,
-    setButtonList
+    setTabInfoList
   ))
   .catch(handleError);
 }
@@ -100,14 +95,25 @@ function ListOfLinks(linkList: LinkListType) {
   );
 }
 
-function ListOfButtons(buttonList: ButtonListType) {
+function ListOfButtons(buttonList: ButtonListType, tabID: number | null) {
 
+  // TODO: function to send the command to the script on tab page
+  const focusOnButtonElement = (index: number) => {
+    if (tabID === null) return;
+    browser.tabs.sendMessage(tabID, {
+      tabID: tabID,
+      command: "buttonFocus",
+      index: index
+    });
+  }; 
   return (
     <List>
-      {buttonList.map((value: ButtonType) => {
+      {buttonList.map((value: ButtonType, index: number) => {
               return (
                 <ListItem disablePadding>
-                <ListItemButton>
+                <ListItemButton
+                  onClick={() => focusOnButtonElement(index)}
+                >
                   <ListItemIcon>
                     <HighlightAltOutlinedIcon />
                   </ListItemIcon>
@@ -168,21 +174,25 @@ function ContentList(DisplayList: JSX.Element) {
 
 export default function App() {
   const [displayListToggle, setDisplayListToggle] = useState("links");
-  const [linkList, setLinkList] = useImmer(Array<LinkType>(0));
-  const [buttonList, setButtonList] = useImmer(Array<ButtonType>(0));
+  const [tabInfoList, setTabInfoList] = useImmer<TabInfoType>({
+    tabID: null,
+    linkList: Array<LinkType>(),
+    buttonList: Array<ButtonType>()
+  });
+  //const [linkList, setLinkList] = useImmer(Array<LinkType>(0));
+  //const [buttonList, setButtonList] = useImmer(Array<ButtonType>(0));
 
   useEffect(() => {
-    scriptSetup(setLinkList, setButtonList);
+    scriptSetup(setTabInfoList);
   }, [
-    setLinkList,
-    setButtonList
+    setTabInfoList,
   ]);
   
   let DisplayList: JSX.Element = (<List></List>);
   if (displayListToggle === "links") {
-    DisplayList = ListOfLinks(linkList);
+    DisplayList = ListOfLinks(tabInfoList.linkList);
   } else if (displayListToggle === "buttons") {
-    DisplayList = ListOfButtons(buttonList);
+    DisplayList = ListOfButtons(tabInfoList.buttonList, tabInfoList.tabID);
   }
 
   return (
