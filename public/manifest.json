@@ -8,7 +8,7 @@
     },
     "permissions": ["activeTab", "tabs"],
     "browser_action" : {
-        "default_icon": "assets/icons/placeholder-48.png",
+        "default_icon": "assets/icons/LinksAndButtonIcon-48.png",
         "default_title": "LinksAndButtons",
         "default_popup": "index.html"
     },
